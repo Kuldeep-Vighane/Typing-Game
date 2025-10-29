@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Typing Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0e0;
+            margin-bottom: 20px;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0e0;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .level-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .level-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fc00ff;
+            text-transform: uppercase;
+        }
+
+        .level-number {
+            font-size: 0.9rem;
+            color: #a0a0e0;
+        }
+
+        .level-progress {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .level-bar {
+            width: 200px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .level-text {
+            font-size: 0.8rem;
+            color: #a0a0e0;
+        }
+
+        .game-area {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .word-display {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .input-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #word-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #word-input:focus {
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .timer {
+            font-size: 5rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .instructions h2 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .instructions li::before {
+            content: '▶';
+            color: #fc00ff;
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .correct {
+            color: #00ff00;
+        }
+
+        .incorrect {
+            color: #ff0000;
+            text-decoration: underline;
+        }
+
+        .active {
+            background-color: rgba(0, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .game-over h2 {
+            color: #fc00ff;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .final-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .final-stat {
+            text-align: center;
+        }
+
+        .final-value {
+            font-size: 2.5rem;
+            color: #00ffff;
+        }
+
+        .final-label {
+            font-size: 1rem;
+            color: #a0a0e0;
+        }
+
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            z-index: 100;
+            display: none;
+        }
+
+        .level-up h2 {
+            font-size: 3rem;
+            color: #fc00ff;
+            margin-bottom: 20px;
+        }
+
+        .level-up p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #00ffff;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stats {
+                justify-content: space-between;
+            }
+            
+            .word-display {
+                font-size: 1.8rem;
+            }
+            
+            .timer {
+                font-size: 3.5rem;
+            }
+            
+            .level-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .level-bar {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <h1>FUTURISTIC TYPING MASTER</h1>
+            <p class="subtitle">Test your typing skills in this cybernetic challenge!</p>
+        </header>
+        
+        <div class="game-info">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="wpm">0</div>
+                    <div class="stat-label">WPM</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="accuracy">100%</div>
+                    <div class="stat-label">ACCURACY</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">SCORE</div>
+                </div>
+            </div>
+            
+            <div class="level-info">
+                <div class="level-display">
+                    <div class="level-name" id="level-name">ADEPT</div>
+                    <div class="level-number">LEVEL <span id="level-number">2</span></div>
+                </div>
+                <div class="level-progress">
+                    <div class="level-bar">
+                        <div class="level-fill" id="level-fill"></div>
+                    </div>
+                    <div class="level-text">WORDS: <span id="level-progress">0/10</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="game-area">
+            <div class="word-display" id="word-display">Press START to begin</div>
+            
+            <div class="input-area">
+                <input type="text" id="word-input" placeholder="Type the word here..." autocomplete="off" disabled>
+            </div>
+            
+            <div class="timer" id="timer">60</div>
+            
+            <div class="controls">
+                <button id="start-btn">START GAME</button>
+                <button id="reset-btn">RESET</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>HOW TO PLAY</h2>
+            <ul>
+                <li>Type the word displayed above as quickly and accurately as possible</li>
+                <li>Each correct word increases your score and WPM</li>
+                <li>Maintain high accuracy for bonus points</li>
+                <li>Complete words before time runs out</li>
+                <li>Advance through levels automatically by completing word quotas</li>
+                <li>Higher levels feature longer and more complex words</li>
+            </ul>
+        </div>
+        
+        <div class="game-over" id="game-over">
+            <h2>MISSION COMPLETE</h2>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div class="final-value" id="final-wpm">0</div>
+                    <div class="final-label">WPM</div>
+                </div>
+                <div class="final-stat">
+                    <div class="final-value" id="final-accuracy">100%</div>
+                    <div class="final-label">ACCURACY</div>
+                </div>
+                <div class="final-stat">
+                    <div class="final-value" id="final-score">0</div>
+                    <div class="final-label">SCORE</div>
+                </div>
+                <div class="final-stat">
+                    <div class="final-value" id="final-level">0</div>
+                    <div class="final-label">LEVEL</div>
+                </div>
+            </div>
+            <button id="play-again">PLAY AGAIN</button>
+        </div>
+        
+        <div class="level-up" id="level-up">
+            <h2>LEVEL UP!</h2>
+            <p>You've reached <span id="new-level-name">ADEPT</span></p>
+            <button id="continue-btn">CONTINUE</button>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let currentWord = '';
+        let currentLevel = 1;
+        let score = 0;
+        let correctWords = 0;
+        let totalWords = 0;
+        let levelWordsCompleted = 0;
+        let wordsPerLevel = 10;
+        let startTime;
+        let timerInterval;
+        let timeLeft = 60;
+        let gameActive = false;
+        let usedWords = new Set();
+        
+        // Level definitions
+        const levels = {
+            1: { name: "NOVICE", wordsPerLevel: 8, time: 60 },
+            2: { name: "ADEPT", wordsPerLevel: 10, time: 60 },
+            3: { name: "EXPERT", wordsPerLevel: 12, time: 60 },
+            4: { name: "MASTER", wordsPerLevel: 15, time: 60 },
+            5: { name: "LEGEND", wordsPerLevel: 20, time: 60 }
+        };
+        
+        // Word banks for different levels (ensuring no repetition)
+        const wordBanks = {
+            1: ["code", "data", "byte", "chip", "disk", "file", "link", "loop", "node", "port", 
+                "root", "site", "text", "user", "wave", "wire", "zoom", "font", "grid", "icon",
+                "menu", "mode", "path", "tool", "view", "wiki", "blog", "chat", "cloud", "email"],
+                
+            2: ["algorithm", "binary", "browser", "cache", "cyberspace", "database", "encrypt", 
+                "firewall", "framework", "function", "hardware", "interface", "keyboard", 
+                "network", "password", "protocol", "software", "terminal", "variable", "wireless",
+                "analytics", "backup", "compiler", "debugger", "download", "ethernet", "firmware"],
+                
+            3: ["authentication", "bandwidth", "compression", "cryptography", "decentralized", 
+                "distributed", "encapsulation", "infrastructure", "interoperability", "microprocessor", 
+                "multithreading", "nanotechnology", "parallelism", "quantum computing", "virtualization",
+                "artificial intelligence", "machine learning", "neural network", "blockchain", "cybersecurity"],
+                
+            4: ["biometric authentication", "computational linguistics", "cryptographic hash function", 
+                "distributed ledger technology", "electromagnetic interference", "hypertext transfer protocol", 
+                "multifactor authentication", "object oriented programming", "quantum entanglement", 
+                "recursive self improvement", "semantic web ontology", "transcranial magnetic stimulation"],
+                
+            5: ["anthropomorphic user interface", "asynchronous javascript and xml", 
+                "bidirectional encoder representations from transformers", "cascading style sheets", 
+                "hypertext markup language", "representational state transfer", "single page application", 
+                "three dimensional printing technology", "user experience design principles", 
+                "virtual reality head mounted display"]
+        };
+        
+        // DOM elements
+        const wordDisplay = document.getElementById('word-display');
+        const wordInput = document.getElementById('word-input');
+        const timerDisplay = document.getElementById('timer');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const scoreDisplay = document.getElementById('score');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const progressBar = document.getElementById('progress');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalWpm = document.getElementById('final-wpm');
+        const finalAccuracy = document.getElementById('final-accuracy');
+        const finalScore = document.getElementById('final-score');
+        const finalLevel = document.getElementById('final-level');
+        const playAgainBtn = document.getElementById('play-again');
+        const levelUpScreen = document.getElementById('level-up');
+        const newLevelName = document.getElementById('new-level-name');
+        const continueBtn = document.getElementById('continue-btn');
+        const levelNameDisplay = document.getElementById('level-name');
+        const levelNumberDisplay = document.getElementById('level-number');
+        const levelFill = document.getElementById('level-fill');
+        const levelProgressText = document.getElementById('level-progress');
+        const particlesContainer = document.getElementById('particles');
+        
+        // Initialize particles
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.random() * 100}, ${Math.random() * 200 + 55}, ${Math.random() * 200 + 55}, ${Math.random() * 0.5 + 0.2})`;
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animation = `float ${Math.random() * 20 + 10}s linear infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Get a random word from the current level's word bank
+        function getRandomWord() {
+            const levelWords = wordBanks[currentLevel];
+            let availableWords = levelWords.filter(word => !usedWords.has(word));
+            
+            // If all words have been used, reset the used words for this level
+            if (availableWords.length === 0) {
+                usedWords.clear();
+                availableWords = levelWords;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableWords.length);
+            const word = availableWords[randomIndex];
+            usedWords.add(word);
+            return word;
+        }
+        
+        // Display a new word
+        function displayNewWord() {
+            currentWord = getRandomWord();
+            wordDisplay.textContent = currentWord;
+            wordInput.value = '';
+            wordInput.focus();
+            
+            // Reset input styling
+            wordInput.classList.remove('correct', 'incorrect');
+        }
+        
+        // Update level progress display
+        function updateLevelProgress() {
+            const progressPercent = (levelWordsCompleted / levels[currentLevel].wordsPerLevel) * 100;
+            levelFill.style.width = `${progressPercent}%`;
+            levelProgressText.textContent = `${levelWordsCompleted}/${levels[currentLevel].wordsPerLevel}`;
+        }
+        
+        // Check if level is completed
+        function checkLevelCompletion() {
+            if (levelWordsCompleted >= levels[currentLevel].wordsPerLevel) {
+                // Level completed!
+                levelUp();
+            }
+        }
+        
+        // Level up function
+        function levelUp() {
+            if (currentLevel < 5) {
+                // Pause the game
+                gameActive = false;
+                clearInterval(timerInterval);
+                
+                // Show level up screen
+                currentLevel++;
+                newLevelName.textContent = levels[currentLevel].name;
+                levelUpScreen.style.display = 'block';
+                
+                // Update level display
+                updateLevelDisplay();
+                
+                // Reset level progress
+                levelWordsCompleted = 0;
+                updateLevelProgress();
+                
+                // Reset timer for new level
+                timeLeft = levels[currentLevel].time;
+                timerDisplay.textContent = timeLeft;
+                
+                // Reset progress bar
+                progressBar.style.width = '0%';
+            } else {
+                // Game completed - all levels finished
+                endGame();
+            }
+        }
+        
+        // Update level display
+        function updateLevelDisplay() {
+            levelNameDisplay.textContent = levels[currentLevel].name;
+            levelNumberDisplay.textContent = currentLevel;
+        }
+        
+        // Start the game
+        function startGame() {
+            if (gameActive) return;
+            
+            // Reset game state
+            score = 0;
+            correctWords = 0;
+            totalWords = 0;
+            levelWordsCompleted = 0;
+            timeLeft = levels[currentLevel].time;
+            usedWords.clear();
+            gameActive = true;
+            
+            // Update displays
+            updateStats();
+            timerDisplay.textContent = timeLeft;
+            progressBar.style.width = '0%';
+            
+            // Enable input
+            wordInput.disabled = false;
+            wordInput.focus();
+            
+            // Update level display
+            updateLevelDisplay();
+            updateLevelProgress();
+            
+            // Display first word
+            displayNewWord();
+            
+            // Start timer
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Change button text
+            startBtn.textContent = 'RESTART';
+            
+            // Hide level up screen if visible
+            levelUpScreen.style.display = 'none';
+        }
+        
+        // Update the timer
+        function updateTimer() {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+            
+            // Update progress bar
+            const progress = ((levels[currentLevel].time - timeLeft) / levels[currentLevel].time) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Change color when time is running out
+            if (timeLeft <= 10) {
+                timerDisplay.style.color = '#ff0000';
+                timerDisplay.style.textShadow = '0 0 15px rgba(255, 0, 0, 0.7)';
+            }
+            
+            // End game when time is up
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+        
+        // Update WPM, accuracy, and score
+        function updateStats() {
+            // Calculate WPM
+            const elapsedMinutes = (new Date() - startTime) / 60000;
+            const wpm = elapsedMinutes > 0 ? Math.round(correctWords / elapsedMinutes) : 0;
+            wpmDisplay.textContent = wpm;
+            
+            // Calculate accuracy
+            const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 100;
+            accuracyDisplay.textContent = `${accuracy}%`;
+            
+            // Update score
+            scoreDisplay.textContent = score;
+        }
+        
+        // Check the typed word
+        function checkWord() {
+            const typedWord = wordInput.value.trim();
+            
+            if (typedWord === currentWord) {
+                // Correct word
+                wordInput.classList.add('correct');
+                correctWords++;
+                totalWords++;
+                levelWordsCompleted++;
+                
+                // Calculate score based on level, WPM, and accuracy
+                const basePoints = currentLevel * 10;
+                const timeBonus = Math.max(0, levels[currentLevel].time - timeLeft);
+                const accuracyBonus = correctWords / totalWords * 50;
+                score += basePoints + timeBonus + Math.round(accuracyBonus);
+                
+                // Update level progress
+                updateLevelProgress();
+                
+                // Check if level is completed
+                checkLevelCompletion();
+                
+                // Display new word after a short delay if game is still active
+                if (gameActive) {
+                    setTimeout(displayNewWord, 300);
+                }
+            } else if (typedWord.length === currentWord.length) {
+                // Incorrect word (same length)
+                wordInput.classList.add('incorrect');
+                totalWords++;
+                
+                // Display new word after a short delay
+                setTimeout(displayNewWord, 500);
+            }
+            
+            // Update stats
+            updateStats();
+        }
+        
+        // End the game
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            // Disable input
+            wordInput.disabled = true;
+            
+            // Calculate final stats
+            const elapsedMinutes = (levels[currentLevel].time - timeLeft) / 60;
+            const finalWpmValue = elapsedMinutes > 0 ? Math.round(correctWords / elapsedMinutes) : 0;
+            const finalAccuracyValue = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 100;
+            
+            // Display final stats
+            finalWpm.textContent = finalWpmValue;
+            finalAccuracy.textContent = `${finalAccuracyValue}%`;
+            finalScore.textContent = score;
+            finalLevel.textContent = currentLevel;
+            
+            // Show game over screen
+            gameOverScreen.style.display = 'block';
+        }
+        
+        // Reset the game
+        function resetGame() {
+            clearInterval(timerInterval);
+            gameActive = false;
+            currentLevel = 1;
+            timeLeft = levels[currentLevel].time;
+            timerDisplay.textContent = timeLeft;
+            timerDisplay.style.color = '#00ffff';
+            timerDisplay.style.textShadow = '0 0 15px rgba(0, 255, 255, 0.7)';
+            wordInput.disabled = true;
+            wordInput.value = '';
+            wordInput.classList.remove('correct', 'incorrect');
+            wordDisplay.textContent = 'Press START to begin';
+            progressBar.style.width = '0%';
+            gameOverScreen.style.display = 'none';
+            levelUpScreen.style.display = 'none';
+            startBtn.textContent = 'START GAME';
+            
+            // Reset stats
+            score = 0;
+            correctWords = 0;
+            totalWords = 0;
+            levelWordsCompleted = 0;
+            updateStats();
+            updateLevelDisplay();
+            updateLevelProgress();
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', startGame);
+        resetBtn.addEventListener('click', resetGame);
+        playAgainBtn.addEventListener('click', resetGame);
+        continueBtn.addEventListener('click', startGame);
+        
+        wordInput.addEventListener('input', function() {
+            if (!gameActive) return;
+            
+            // Check if space was pressed (indicating word completion)
+            if (this.value.includes(' ')) {
+                this.value = this.value.trim();
+                checkWord();
+            }
+            
+            // Visual feedback for correct/incorrect typing
+            const typedWord = this.value;
+            if (currentWord.startsWith(typedWord)) {
+                this.classList.remove('incorrect');
+            } else {
+                this.classList.add('incorrect');
+            }
+        });
+        
+        // Allow Enter key to submit word
+        wordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && gameActive) {
+                checkWord();
+            }
+        });
+        
+        // Initialize particles and game
+        createParticles();
+        resetGame();
+    </script>
+</body>
+</html>
